@@ -4,9 +4,9 @@ import html2canvas from "html2canvas";
 import { 
   Feather, Search, Palette, Sparkles, Copy, Share2, 
   Menu, Music, Heart, Award, Volume2, Globe, BookOpen, 
-  Moon, Crown, Leaf, Scroll, Gem, PenTool, X, Type, Wand2, Mic, Headphones, Play, Square, AudioLines, Download, Trash2, Plus, Camera, AlignLeft, Maximize2, Image
+  Moon, Crown, Leaf, Scroll, Gem, PenTool, X, Type, Wand2, Mic, Headphones, Play, Square, AudioLines, Download, Trash2, Plus, Camera, AlignLeft, Maximize2, Image, Key
 } from "lucide-react";
-import { generatePoetry, generateAudio, generateImage } from "./services/ai";
+import { generatePoetry, generateAudio, generateImage, setApiKey } from "./services/ai";
 import { exportWAV } from "./lib/audioWav";
 import { toast, Toaster } from "sonner";
 import { cn } from "@/lib/utils";
@@ -33,6 +33,20 @@ const TEMPLATES = [
 ];
 
 export default function App() {
+  const [geminiApiKey, setGeminiApiKeyInput] = useState(storage.get('gemini_api_key', ''));
+  const [freepikApiKey, setFreepikApiKeyInput] = useState(storage.get('freepik_api_key', ''));
+
+  useEffect(() => {
+    if (geminiApiKey) {
+      setApiKey(geminiApiKey);
+      storage.set('gemini_api_key', geminiApiKey);
+    }
+  }, [geminiApiKey]);
+
+  useEffect(() => {
+    storage.set('freepik_api_key', freepikApiKey);
+  }, [freepikApiKey]);
+
   const [keyword, setKeyword] = useState("");
   const [authorLabel, setAuthorLabel] = useState("");
   const [savedLabels, setSavedLabels] = useState<string[]>(() => storage.get('masriz_labels', []));
@@ -640,6 +654,35 @@ export default function App() {
                     </div>
                   </div>
                 ))}
+
+                {/* API Key Settings */}
+                <div className="pt-6 border-t border-white/20">
+                  <h3 className="text-sm font-medium mb-3 flex items-center gap-2 text-[#FFD700]">
+                    <Key className="w-4 h-4" /> API Keys
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs text-white/60 mb-1 block">Google AI Studio</label>
+                      <input 
+                        type="password"
+                        value={geminiApiKey}
+                        onChange={(e) => setGeminiApiKeyInput(e.target.value)}
+                        placeholder="AIza..."
+                        className="w-full px-3 py-2 bg-black/40 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-[#FFD700]/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-white/60 mb-1 block">Freepik API</label>
+                      <input 
+                        type="password"
+                        value={freepikApiKey}
+                        onChange={(e) => setFreepikApiKeyInput(e.target.value)}
+                        placeholder="Freepik Key..."
+                        className="w-full px-3 py-2 bg-black/40 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-[#FFD700]/50"
+                      />
+                    </div>
+                  </div>
+                </div>
 
                 {/* Spacer */}
                 <div className="pt-6 border-t border-white/20">

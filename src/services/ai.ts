@@ -1,6 +1,10 @@
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let ai: GoogleGenAI | null = null;
+
+export function setApiKey(key: string) {
+  ai = new GoogleGenAI({ apiKey: key });
+}
 
 export async function generatePoetry(
   keyword: string,
@@ -11,6 +15,8 @@ export async function generatePoetry(
   reading: string,
   language: string
 ): Promise<{ title: string; content: string; author: string }> {
+  if (!ai) throw new Error("API Key belum diatur.");
+  
   const prompt = `You are a professional ${language !== "Acak (Default)" ? language : "Indonesian"} poet.
 Generate an original ${contentType} about "${keyword}".
 Style: ${genre !== "Acak (Default)" ? genre : "Sufi"}
@@ -58,6 +64,7 @@ Format: JSON only.
 }
 
 export async function generateAudio(text: string, voiceName: string = 'Kore'): Promise<Uint8Array | null> {
+  if (!ai) throw new Error("API Key belum diatur.");
   const prompt = `Read the following poem expressively:\n\n${text}`;
   const response = await ai.models.generateContent({
     model: "gemini-3.1-flash-tts-preview",
@@ -84,6 +91,7 @@ export async function generateAudio(text: string, voiceName: string = 'Kore'): P
 }
 
 export async function generateImage(prompt: string, poemTitle?: string, poemContent?: string): Promise<string | null> {
+  if (!ai) throw new Error("API Key belum diatur.");
   let finalPrompt = prompt;
   if (poemTitle && poemContent) {
     finalPrompt = `Create an artistic image that incorporates the following title and poem text:
