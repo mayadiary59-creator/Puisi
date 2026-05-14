@@ -1,0 +1,8 @@
+{
+  "name": "Remix: MasRiz_Syair",
+  "description": "Generator Puisi \u0026 Quotes dengan fitur AI lengkap oleh MasRizAi.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": []
+}
